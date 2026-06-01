@@ -1,0 +1,12 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="caseboardFaviconTitle">
+  <title id="caseboardFaviconTitle">CaseBoard favicon</title>
+  <rect width="64" height="64" rx="14" fill="#0F1110"/>
+  <path d="M13 13H29L33 18H50C52.7614 18 55 20.2386 55 23V50C55 52.7614 52.7614 55 50 55H14C11.2386 55 9 52.7614 9 50V17C9 14.7909 10.7909 13 13 13Z" stroke="#6F7776" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M13 34L22 25" stroke="#5F858C" stroke-width="3" stroke-linecap="round"/>
+  <path d="M13 34L24 45" stroke="#5F858C" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="13" cy="34" r="4" fill="#181D1B" stroke="#8D9491" stroke-width="3"/>
+  <circle cx="22" cy="25" r="4" fill="#181D1B" stroke="#5F858C" stroke-width="3"/>
+  <circle cx="24" cy="45" r="4" fill="#181D1B" stroke="#8F3F46" stroke-width="3"/>
+  <path d="M37 23H30C23.3726 23 18 28.3726 18 35C18 41.6274 23.3726 47 30 47H37V39H31C28.7909 39 27 37.2091 27 35C27 32.7909 28.7909 31 31 31H37V23Z" fill="#D8D6CF"/>
+  <path d="M39 23H46C51.5228 23 56 27.4772 56 33C56 35.5197 55.0674 37.8215 53.5281 39.5795C55.0593 41.3824 56 43.7242 56 46.3V47H39V23ZM46 30V37H47C48.933 37 50.5 35.433 50.5 33.5C50.5 31.567 48.933 30 47 30H46ZM46 41V47H50V45C50 42.7909 48.2091 41 46 41Z" fill="#5F858C"/>
+</svg>

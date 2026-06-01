@@ -1,0 +1,108 @@
+{
+  "meta": {
+    "title": "CaseBoard | Case-file project board",
+    "description": "A graph-based project management service for connecting tasks, bugs, people, and events as clue cards"
+  },
+  "nav": {
+    "home": "Home",
+    "boards": "Case Files",
+    "mypage": "Investigator",
+    "login": "Log in",
+    "signup": "Sign up",
+    "logout": "Log out",
+    "language": "Language"
+  },
+  "home": {
+    "eyebrow": "Graph-based Case File Editor",
+    "title": "Track project evidence like an investigation.",
+    "description": "CaseBoard lets you place tasks, bugs, people, and events on an investigation-style board, then connect their relationships to understand project flow.",
+    "start": "Open Case Files",
+    "createAccount": "Register Investigator",
+    "featureEditor": "Graph Editor",
+    "featureEditorDesc": "Create, move, and connect clue cards on a React Flow powered board.",
+    "featureAnalysis": "Automated Analysis",
+    "featureAnalysisDesc": "Detect unlinked clues, critical clues, suspicious links, and type statistics automatically.",
+    "featureI18n": "Korean / English",
+    "featureI18nDesc": "Switch UI copy through separated translation files."
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "loginTitle": "Investigator Login",
+    "signupTitle": "Register Investigator",
+    "loginButton": "Log in",
+    "signupButton": "Sign up",
+    "needAccount": "Need an account?",
+    "hasAccount": "Already registered?",
+    "goSignup": "Sign up",
+    "goLogin": "Log in",
+    "invalid": "Check your email or password.",
+    "emailExists": "This email is already registered.",
+    "required": "Please fill in the required fields."
+  },
+  "boards": {
+    "title": "Case Archive",
+    "subtitle": "Create project case files and manage investigation boards.",
+    "new": "New Case File",
+    "create": "Create",
+    "delete": "Delete",
+    "search": "Search case files",
+    "searchPlaceholder": "Search by title or description",
+    "empty": "No case files have been created yet.",
+    "open": "Open",
+    "titleLabel": "File name",
+    "descriptionLabel": "Summary",
+    "descriptionPlaceholder": "Describe the purpose of this case file.",
+    "nodeCount": "{count} clues",
+    "edgeCount": "{count} links"
+  },
+  "editor": {
+    "caseFile": "Case File",
+    "addNode": "Add Clue",
+    "empty": "No clues have been recorded yet.",
+    "emptyHint": "Add clue cards to track the flow of this project.",
+    "nodeTitle": "Clue title",
+    "nodeContent": "Record",
+    "nodeType": "Type",
+    "save": "Save",
+    "delete": "Delete",
+    "analysis": "Case Analysis",
+    "totalNodes": "Total clues",
+    "totalEdges": "Evidence links",
+    "isolated": "Unlinked clues",
+    "critical": "Critical clues",
+    "reorder": "Reorder Evidence",
+    "focus": "Focused Investigation",
+    "focusOff": "Show All",
+    "searchNode": "Search clues",
+    "suggestions": "Suspicious Links",
+    "connect": "Connect",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "selectNode": "Select a clue to edit.",
+    "types": {
+      "TASK": "Task",
+      "BUG": "Bug",
+      "PERSON": "Person",
+      "EVENT": "Event"
+    }
+  },
+  "mypage": {
+    "title": "Investigator Profile",
+    "subtitle": "Review your account and case file statistics.",
+    "totalBoards": "Case files",
+    "totalNodes": "Clues",
+    "totalEdges": "Evidence links",
+    "recentBoards": "Recent case files"
+  },
+  "status": {
+    "loading": "Loading records...",
+    "errorTitle": "Unable to open the record.",
+    "errorDesc": "Please try again in a moment.",
+    "retry": "Try again",
+    "notFoundTitle": "Case file not found.",
+    "notFoundDesc": "The address is wrong or you do not have access to this record.",
+    "backHome": "Back home"
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "meta": {
+    "title": "CaseBoard | 사건 파일형 프로젝트 보드",
+    "description": "작업, 버그, 사람, 일정을 단서 카드로 연결해 프로젝트의 관계를 추적하는 그래프 기반 프로젝트 관리 서비스"
+  },
+  "nav": {
+    "home": "홈",
+    "boards": "사건 파일",
+    "mypage": "수사관 기록",
+    "login": "로그인",
+    "signup": "회원가입",
+    "logout": "로그아웃",
+    "language": "언어"
+  },
+  "home": {
+    "eyebrow": "Graph-based Case File Editor",
+    "title": "프로젝트의 단서를 연결해 사건처럼 추적하세요.",
+    "description": "CaseBoard는 작업, 버그, 사람, 일정을 하나의 수사 보드 위에 배치하고 관계를 연결해 프로젝트 흐름을 시각적으로 정리하는 웹 서비스입니다.",
+    "start": "사건 파일 열기",
+    "createAccount": "수사관 등록",
+    "featureEditor": "그래프 에디터",
+    "featureEditorDesc": "React Flow 기반 보드에서 단서 카드를 만들고 이동하며 관계선을 연결합니다.",
+    "featureAnalysis": "자동 분석",
+    "featureAnalysisDesc": "미연결 단서, 핵심 단서, 의심 관계, 타입별 통계를 자동으로 확인합니다.",
+    "featureI18n": "한국어/영어 지원",
+    "featureI18nDesc": "분리된 번역 파일로 서비스 전반의 UI 문구를 전환합니다."
+  },
+  "auth": {
+    "email": "이메일",
+    "password": "비밀번호",
+    "name": "이름",
+    "loginTitle": "수사관 로그인",
+    "signupTitle": "새 수사관 등록",
+    "loginButton": "로그인",
+    "signupButton": "회원가입",
+    "needAccount": "계정이 없다면",
+    "hasAccount": "이미 계정이 있다면",
+    "goSignup": "회원가입",
+    "goLogin": "로그인",
+    "invalid": "이메일 또는 비밀번호를 확인해주세요.",
+    "emailExists": "이미 등록된 이메일입니다.",
+    "required": "필수 입력값을 확인해주세요."
+  },
+  "boards": {
+    "title": "Case Archive",
+    "subtitle": "프로젝트 사건 파일을 만들고 수사 보드를 관리하세요.",
+    "new": "새 사건 파일",
+    "create": "생성",
+    "delete": "삭제",
+    "search": "사건 파일 검색",
+    "searchPlaceholder": "제목 또는 설명으로 검색",
+    "empty": "아직 생성된 사건 파일이 없습니다.",
+    "open": "열기",
+    "titleLabel": "파일명",
+    "descriptionLabel": "요약",
+    "descriptionPlaceholder": "이 사건 파일의 목적을 적어주세요.",
+    "nodeCount": "단서 {count}개",
+    "edgeCount": "관계 {count}개"
+  },
+  "editor": {
+    "caseFile": "Case File",
+    "addNode": "단서 추가",
+    "empty": "아직 기록된 단서가 없습니다.",
+    "emptyHint": "단서 카드를 추가해 이 프로젝트의 흐름을 추적하세요.",
+    "nodeTitle": "단서 제목",
+    "nodeContent": "기록 내용",
+    "nodeType": "타입",
+    "save": "저장",
+    "delete": "삭제",
+    "analysis": "사건 분석",
+    "totalNodes": "전체 단서",
+    "totalEdges": "관계선",
+    "isolated": "미연결 단서",
+    "critical": "핵심 단서",
+    "reorder": "증거판 재정리",
+    "focus": "집중 수사",
+    "focusOff": "전체 보기",
+    "searchNode": "단서 검색",
+    "suggestions": "의심 관계",
+    "connect": "연결",
+    "saving": "저장 중...",
+    "saved": "저장됨",
+    "selectNode": "편집할 단서를 선택하세요.",
+    "types": {
+      "TASK": "작업",
+      "BUG": "버그",
+      "PERSON": "사람",
+      "EVENT": "일정"
+    }
+  },
+  "mypage": {
+    "title": "Investigator Profile",
+    "subtitle": "내 계정과 사건 파일 통계를 확인하세요.",
+    "totalBoards": "총 사건 파일",
+    "totalNodes": "총 단서",
+    "totalEdges": "총 관계",
+    "recentBoards": "최근 사건 파일"
+  },
+  "status": {
+    "loading": "기록을 불러오는 중입니다...",
+    "errorTitle": "기록을 열 수 없습니다.",
+    "errorDesc": "잠시 후 다시 시도해주세요.",
+    "retry": "다시 시도",
+    "notFoundTitle": "사건 파일을 찾을 수 없습니다.",
+    "notFoundDesc": "주소가 잘못되었거나 접근 권한이 없는 기록입니다.",
+    "backHome": "홈으로"
+  }
+}

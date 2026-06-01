@@ -1,0 +1,16 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="caseboardSymbolTitle caseboardSymbolDesc">
+  <title id="caseboardSymbolTitle">CaseBoard symbol</title>
+  <desc id="caseboardSymbolDesc">A flat CB monogram inside a case file with connected graph nodes.</desc>
+  <path d="M41 37H113L130 57H211C222.046 57 231 65.9543 231 77V203C231 214.046 222.046 223 211 223H45C33.9543 223 25 214.046 25 203V53C25 44.1634 32.1634 37 41 37Z" stroke="#6F7776" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M143 74H197L206 91H152L143 74Z" fill="#8F3F46"/>
+
+  <path d="M43 116L77 84" stroke="#5F858C" stroke-width="7" stroke-linecap="round"/>
+  <path d="M43 116L81 169" stroke="#5F858C" stroke-width="7" stroke-linecap="round"/>
+  <path d="M77 84L81 169" stroke="#5F858C" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="43" cy="116" r="16" fill="#181D1B" stroke="#8D9491" stroke-width="8"/>
+  <circle cx="77" cy="84" r="16" fill="#181D1B" stroke="#5F858C" stroke-width="8"/>
+  <circle cx="81" cy="169" r="16" fill="#181D1B" stroke="#8F3F46" stroke-width="8"/>
+
+  <path d="M145 87H111C87.2518 87 68 106.252 68 130C68 153.748 87.2518 173 111 173H145V145H113C104.716 145 98 138.284 98 130C98 121.716 104.716 115 113 115H145V87Z" fill="#D8D6CF"/>
+  <path d="M149 87H182C198.569 87 212 100.431 212 117C212 123.854 209.703 130.172 205.837 135.226C213.153 140.589 218 149.204 218 159V173H149V87ZM174 111V129H183C187.971 129 192 124.971 192 120C192 115.029 187.971 111 183 111H174ZM174 149V173H193V162C193 154.82 187.18 149 180 149H174Z" fill="#5F858C"/>
+</svg>

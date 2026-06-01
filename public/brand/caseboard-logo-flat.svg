@@ -1,0 +1,29 @@
+<svg width="760" height="180" viewBox="0 0 760 180" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="caseboardLogoTitle caseboardLogoDesc">
+  <title id="caseboardLogoTitle">CaseBoard logo</title>
+  <desc id="caseboardLogoDesc">A flat CaseBoard logo with a case file, connected graph nodes, and CB monogram.</desc>
+  <defs>
+    <style>
+      .outline { stroke: #6f7776; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+      .link { stroke: #5f858c; stroke-width: 5; stroke-linecap: round; }
+      .word { font: 700 68px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: 0; }
+    </style>
+  </defs>
+
+  <g transform="translate(24 22)">
+    <path class="outline" d="M44 18H116L132 38H214C225.046 38 234 46.9543 234 58V126C234 137.046 225.046 146 214 146H44C32.9543 146 24 137.046 24 126V38C24 26.9543 32.9543 18 44 18Z"/>
+    <path d="M155 54H203L211 68H163L155 54Z" fill="#8f3f46"/>
+
+    <path class="link" d="M30 74L64 46"/>
+    <path class="link" d="M30 74L70 116"/>
+    <path class="link" d="M64 46L70 116"/>
+    <circle cx="30" cy="74" r="13" fill="#181d1b" stroke="#8d9491" stroke-width="6"/>
+    <circle cx="64" cy="46" r="13" fill="#181d1b" stroke="#5f858c" stroke-width="6"/>
+    <circle cx="70" cy="116" r="13" fill="#181d1b" stroke="#8f3f46" stroke-width="6"/>
+
+    <path d="M132 50H101C77.2518 50 58 69.2518 58 93C58 116.748 77.2518 136 101 136H132V112H102C91.5066 112 83 103.493 83 93C83 82.5066 91.5066 74 102 74H132V50Z" fill="#D8D6CF"/>
+    <path d="M139 50H180C197.673 50 212 64.3269 212 82C212 90.4445 208.729 98.125 203.385 103.846C212.665 109.259 219 119.316 219 131V136H139V50ZM163 73V95H179C185.075 95 190 90.0751 190 84C190 77.9249 185.075 73 179 73H163ZM163 113V136H194V131C194 121.059 185.941 113 176 113H163Z" fill="#5F858C"/>
+  </g>
+
+  <text class="word" x="318" y="112" fill="#D8D6CF">Case</text>
+  <text class="word" x="488" y="112" fill="#5F858C">Board</text>
+</svg>
