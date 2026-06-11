@@ -81,7 +81,8 @@
     "connect": "Connect",
     "saving": "Saving...",
     "saved": "Saved",
-    "selectNode": "Select a clue to edit.",
+    "selectNode": "Select a clue to edit or a link to delete.",
+    "edgeDeleteHint": "Click an evidence link to show its delete button in this panel.",
     "types": {
       "TASK": "Task",
       "BUG": "Bug",

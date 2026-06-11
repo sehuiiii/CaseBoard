@@ -80,6 +80,7 @@ export default async function BoardDetailPage({
           saving: t("saving"),
           saved: t("saved"),
           selectNode: t("selectNode"),
+          edgeDeleteHint: t("edgeDeleteHint"),
           typeLabels
         }}
         initialEdges={board.edges.map((edge) => ({

@@ -83,6 +83,7 @@ type EditorCopy = {
   saving: string;
   saved: string;
   selectNode: string;
+  edgeDeleteHint: string;
   typeLabels: Record<CaseNodeType, string>;
 };
 
@@ -688,20 +689,29 @@ function GraphEditorInner({
                 </button>
               </div>
             </form>
+          ) : selectedEdgeId ? (
+            <p className="text-sm text-[var(--cb-muted)]">
+              {copy.edgeDeleteHint}
+            </p>
           ) : (
-            <p className="text-sm text-[var(--cb-muted)]">{copy.selectNode}</p>
+            <div className="grid gap-2 text-sm text-[var(--cb-muted)]">
+              <p>{copy.selectNode}</p>
+              <p>{copy.edgeDeleteHint}</p>
+            </div>
           )}
 
           {selectedEdgeId ? (
-            <button
-              className="button danger mt-3 w-full"
-              disabled={isPending}
-              onClick={deleteSelectedEdge}
-              type="button"
-            >
-              <Link2 className="h-4 w-4" />
-              {copy.delete}
-            </button>
+            <div className="mt-3">
+              <button
+                className="button danger w-full"
+                disabled={isPending}
+                onClick={deleteSelectedEdge}
+                type="button"
+              >
+                <Link2 className="h-4 w-4" />
+                {copy.delete}
+              </button>
+            </div>
           ) : null}
         </div>
       </aside>
