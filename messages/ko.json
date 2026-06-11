@@ -51,6 +51,7 @@
     "searchPlaceholder": "제목 또는 설명으로 검색",
     "empty": "아직 생성된 사건 파일이 없습니다.",
     "open": "열기",
+    "caseFile": "Case File",
     "titleLabel": "파일명",
     "descriptionLabel": "요약",
     "descriptionPlaceholder": "이 사건 파일의 목적을 적어주세요.",
@@ -94,7 +95,9 @@
     "totalBoards": "총 사건 파일",
     "totalNodes": "총 단서",
     "totalEdges": "총 관계",
-    "recentBoards": "최근 사건 파일"
+    "recentBoards": "최근 사건 파일",
+    "recentSummary": "단서 {nodes}개 / 관계 {edges}개",
+    "emptyRecent": "아직 최근 사건 파일이 없습니다."
   },
   "status": {
     "loading": "기록을 불러오는 중입니다...",

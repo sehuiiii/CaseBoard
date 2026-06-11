@@ -51,6 +51,7 @@
     "searchPlaceholder": "Search by title or description",
     "empty": "No case files have been created yet.",
     "open": "Open",
+    "caseFile": "Case File",
     "titleLabel": "File name",
     "descriptionLabel": "Summary",
     "descriptionPlaceholder": "Describe the purpose of this case file.",
@@ -94,7 +95,9 @@
     "totalBoards": "Case files",
     "totalNodes": "Clues",
     "totalEdges": "Evidence links",
-    "recentBoards": "Recent case files"
+    "recentBoards": "Recent case files",
+    "recentSummary": "{nodes} clues / {edges} links",
+    "emptyRecent": "No recent case files yet."
   },
   "status": {
     "loading": "Loading records...",

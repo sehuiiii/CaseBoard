@@ -8,6 +8,12 @@ import type {CaseNodeType} from "@/lib/case-types";
 import {prisma} from "@/lib/prisma";
 import {readString} from "@/lib/validation";
 
+function revalidateBoardSurfaces(locale: Locale, boardId: string) {
+  revalidatePath(`/${locale}/boards`);
+  revalidatePath(`/${locale}/boards/${boardId}`);
+  revalidatePath(`/${locale}/mypage`);
+}
+
 export async function createBoardAction(locale: Locale, formData: FormData) {
   const user = await requireUser(locale);
   const title = readString(formData, "title");
@@ -68,18 +74,28 @@ export async function createNodeAction(
     notFound();
   }
 
-  const node = await prisma.caseNode.create({
-    data: {
-      boardId,
-      type: input.type,
-      title: input.title,
-      content: input.content || null,
-      x: input.x,
-      y: input.y
-    }
-  });
+  const [node] = await prisma.$transaction([
+    prisma.caseNode.create({
+      data: {
+        boardId,
+        type: input.type,
+        title: input.title,
+        content: input.content || null,
+        x: input.x,
+        y: input.y
+      }
+    }),
+    prisma.board.update({
+      where: {
+        id: boardId
+      },
+      data: {
+        updatedAt: new Date()
+      }
+    })
+  ]);
 
-  revalidatePath(`/${locale}/boards/${boardId}`);
+  revalidateBoardSurfaces(locale, boardId);
   return node;
 }
 
@@ -108,18 +124,28 @@ export async function updateNodeAction(
     notFound();
   }
 
-  const updated = await prisma.caseNode.update({
-    where: {
-      id: nodeId
-    },
-    data: {
-      type: input.type,
-      title: input.title,
-      content: input.content || null
-    }
-  });
+  const [updated] = await prisma.$transaction([
+    prisma.caseNode.update({
+      where: {
+        id: nodeId
+      },
+      data: {
+        type: input.type,
+        title: input.title,
+        content: input.content || null
+      }
+    }),
+    prisma.board.update({
+      where: {
+        id: boardId
+      },
+      data: {
+        updatedAt: new Date()
+      }
+    })
+  ]);
 
-  revalidatePath(`/${locale}/boards/${boardId}`);
+  revalidateBoardSurfaces(locale, boardId);
   return updated;
 }
 
@@ -130,17 +156,28 @@ export async function deleteNodeAction(
 ) {
   const user = await requireUser(locale);
 
-  await prisma.caseNode.deleteMany({
-    where: {
-      id: nodeId,
-      boardId,
-      board: {
-        ownerId: user.id
+  await prisma.$transaction([
+    prisma.caseNode.deleteMany({
+      where: {
+        id: nodeId,
+        boardId,
+        board: {
+          ownerId: user.id
+        }
       }
-    }
-  });
+    }),
+    prisma.board.updateMany({
+      where: {
+        id: boardId,
+        ownerId: user.id
+      },
+      data: {
+        updatedAt: new Date()
+      }
+    })
+  ]);
 
-  revalidatePath(`/${locale}/boards/${boardId}`);
+  revalidateBoardSurfaces(locale, boardId);
 }
 
 export async function createEdgeAction(
@@ -166,23 +203,33 @@ export async function createEdgeAction(
     throw new Error("Invalid evidence link");
   }
 
-  const edge = await prisma.caseEdge.upsert({
-    where: {
-      boardId_sourceNodeId_targetNodeId: {
+  const [edge] = await prisma.$transaction([
+    prisma.caseEdge.upsert({
+      where: {
+        boardId_sourceNodeId_targetNodeId: {
+          boardId,
+          sourceNodeId,
+          targetNodeId
+        }
+      },
+      update: {},
+      create: {
         boardId,
         sourceNodeId,
         targetNodeId
       }
-    },
-    update: {},
-    create: {
-      boardId,
-      sourceNodeId,
-      targetNodeId
-    }
-  });
+    }),
+    prisma.board.update({
+      where: {
+        id: boardId
+      },
+      data: {
+        updatedAt: new Date()
+      }
+    })
+  ]);
 
-  revalidatePath(`/${locale}/boards/${boardId}`);
+  revalidateBoardSurfaces(locale, boardId);
   return edge;
 }
 
@@ -193,17 +240,28 @@ export async function deleteEdgeAction(
 ) {
   const user = await requireUser(locale);
 
-  await prisma.caseEdge.deleteMany({
-    where: {
-      id: edgeId,
-      boardId,
-      board: {
-        ownerId: user.id
+  await prisma.$transaction([
+    prisma.caseEdge.deleteMany({
+      where: {
+        id: edgeId,
+        boardId,
+        board: {
+          ownerId: user.id
+        }
       }
-    }
-  });
+    }),
+    prisma.board.updateMany({
+      where: {
+        id: boardId,
+        ownerId: user.id
+      },
+      data: {
+        updatedAt: new Date()
+      }
+    })
+  ]);
 
-  revalidatePath(`/${locale}/boards/${boardId}`);
+  revalidateBoardSurfaces(locale, boardId);
 }
 
 export async function saveNodePositionsAction(
@@ -226,8 +284,8 @@ export async function saveNodePositionsAction(
     notFound();
   }
 
-  await prisma.$transaction(
-    positions.map((position) =>
+  await prisma.$transaction([
+    ...positions.map((position) =>
       prisma.caseNode.updateMany({
         where: {
           id: position.id,
@@ -238,8 +296,16 @@ export async function saveNodePositionsAction(
           y: position.y
         }
       })
-    )
-  );
+    ),
+    prisma.board.update({
+      where: {
+        id: boardId
+      },
+      data: {
+        updatedAt: new Date()
+      }
+    })
+  ]);
 
-  revalidatePath(`/${locale}/boards/${boardId}`);
+  revalidateBoardSurfaces(locale, boardId);
 }

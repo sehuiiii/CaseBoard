@@ -47,9 +47,10 @@ export function AuthForm({
 
   return (
     <section className="container page-section">
-      <div className="mx-auto max-w-md panel p-8">
+      <div className="auth-panel panel p-8">
         <p className="eyebrow">CaseBoard</p>
         <h1 className="mt-3 text-3xl font-black">{copy.title}</h1>
+        <div className="mt-4 h-px w-20 bg-[var(--cb-border-strong)]" />
 
         <form action={formAction} className="mt-8 space-y-4">
           {mode === "signup" ? (

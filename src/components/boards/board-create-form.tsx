@@ -18,10 +18,11 @@ export function BoardCreateForm({
   return (
     <form
       action={createBoardAction.bind(null, locale)}
-      className="panel grid gap-4 p-5"
+      className="panel grid content-start gap-4 p-5"
     >
       <div>
         <p className="eyebrow">{copy.new}</p>
+        <div className="mt-3 h-px w-16 bg-[var(--cb-border-strong)]" />
       </div>
       <label className="space-y-2">
         <span className="text-sm font-bold text-[var(--cb-muted)]">

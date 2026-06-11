@@ -17,12 +17,12 @@ export async function SiteHeader({
   const t = await getTranslations({locale, namespace: "nav"});
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--cb-border)] bg-[rgba(15,17,16,0.86)] backdrop-blur">
-      <div className="container flex min-h-16 items-center justify-between gap-4 py-3">
-        <Link className="flex items-center gap-3" href={`/${locale}`}>
+    <header className="site-header sticky top-0 z-40">
+      <div className="container flex min-h-16 items-center justify-between gap-3 py-3">
+        <Link className="flex min-w-0 items-center gap-3" href={`/${locale}`}>
           <Image
             alt="CaseBoard"
-            className="h-9 w-auto"
+            className="h-8 w-auto sm:h-9"
             height={180}
             priority
             src="/brand/caseboard-logo-flat.svg"
@@ -30,44 +30,40 @@ export async function SiteHeader({
           />
         </Link>
 
-        <nav className="hidden items-center gap-2 md:flex">
+        <nav className="flex items-center gap-1.5 sm:gap-2">
           {user ? (
             <>
               <Link
-                className="inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-bold text-[var(--cb-muted)] hover:text-[var(--cb-text)]"
+                className="nav-link"
                 href={`/${locale}/boards`}
               >
                 <Archive className="h-4 w-4" />
-                {t("boards")}
+                <span className="hidden sm:inline">{t("boards")}</span>
               </Link>
               <Link
-                className="inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-bold text-[var(--cb-muted)] hover:text-[var(--cb-text)]"
+                className="nav-link"
                 href={`/${locale}/mypage`}
               >
                 <UserRound className="h-4 w-4" />
-                {t("mypage")}
+                <span className="hidden sm:inline">{t("mypage")}</span>
               </Link>
               <LogoutButton label={t("logout")} locale={locale} />
             </>
           ) : (
             <>
               <Link
-                className="rounded-md px-3 py-2 text-sm font-bold text-[var(--cb-muted)] hover:text-[var(--cb-text)]"
+                className="nav-link"
                 href={`/${locale}/login`}
               >
                 {t("login")}
               </Link>
-              <Link className="button" href={`/${locale}/signup`}>
+              <Link className="button hidden sm:inline-flex" href={`/${locale}/signup`}>
                 {t("signup")}
               </Link>
             </>
           )}
           <LocaleSwitcher locale={locale} />
         </nav>
-
-        <div className="md:hidden">
-          <LocaleSwitcher locale={locale} />
-        </div>
       </div>
     </header>
   );

@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: caseboard
       POSTGRES_DB: caseboard
     ports:
-      - "5432:5432"
+      - "5435:5432"
     volumes:
       - caseboard-postgres-data:/var/lib/postgresql/data
 

@@ -1,14 +1,11 @@
 "use client";
 
 import {
-  addEdge,
   Background,
   Controls,
   MiniMap,
   ReactFlow,
   ReactFlowProvider,
-  useEdgesState,
-  useNodesState,
   useReactFlow,
   type Connection,
   type Edge,
@@ -28,7 +25,14 @@ import {
   Search,
   Trash2
 } from "lucide-react";
-import {useEffect, useMemo, useState, useTransition} from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+  type FormEvent
+} from "react";
 import {
   createEdgeAction,
   createNodeAction,
@@ -90,6 +94,9 @@ type GraphEditorProps = {
   copy: EditorCopy;
 };
 
+const NODE_WIDTH = 220;
+const NODE_HEIGHT = 126;
+
 function toFlowNodes(
   editorNodes: EditorNode[],
   analysis: ReturnType<typeof analyzeGraph>,
@@ -107,20 +114,34 @@ function toFlowNodes(
     }
   }
 
-  return editorNodes.map((node) => ({
-    id: node.id,
-    type: "clue",
-    position: {x: node.x, y: node.y},
-    data: {
-      title: node.title,
-      content: node.content,
-      type: node.type,
-      typeLabel: copy.typeLabels[node.type],
-      isCritical: analysis.criticalIds.includes(node.id),
-      isIsolated: analysis.isolatedIds.includes(node.id),
-      dimmed: focusId ? !relatedIds.has(node.id) : false
+  return editorNodes.map((node) => {
+    const isCritical = analysis.criticalIds.includes(node.id);
+    const isIsolated = analysis.isolatedIds.includes(node.id);
+
+    return {
+      id: node.id,
+      type: "clue",
+      width: NODE_WIDTH,
+      height: NODE_HEIGHT,
+      initialWidth: NODE_WIDTH,
+      initialHeight: NODE_HEIGHT,
+      position: {x: node.x, y: node.y},
+      style: {
+        minHeight: NODE_HEIGHT,
+        visibility: "visible",
+        width: NODE_WIDTH
+      },
+      data: {
+        title: node.title,
+        content: node.content,
+        type: node.type,
+        typeLabel: copy.typeLabels[node.type],
+        isCritical,
+        isIsolated,
+        dimmed: focusId ? !relatedIds.has(node.id) : false
+      }
     }
-  }));
+  });
 }
 
 function toFlowEdges(editorEdges: EditorEdge[], focusId: string | null): Edge[] {
@@ -146,7 +167,7 @@ function layoutNodes(editorNodes: EditorNode[], editorEdges: EditorEdge[]) {
   graph.setGraph({rankdir: "LR", nodesep: 80, ranksep: 120});
 
   for (const node of editorNodes) {
-    graph.setNode(node.id, {width: 220, height: 126});
+    graph.setNode(node.id, {width: NODE_WIDTH, height: NODE_HEIGHT});
   }
 
   for (const edge of editorEdges) {
@@ -161,15 +182,15 @@ function layoutNodes(editorNodes: EditorNode[], editorEdges: EditorEdge[]) {
     if (!position) {
       return {
         ...node,
-        x: (index % 4) * 300,
-        y: Math.floor(index / 4) * 180
+        x: 80 + (index % 4) * (NODE_WIDTH + 80),
+        y: 80 + Math.floor(index / 4) * (NODE_HEIGHT + 54)
       };
     }
 
     return {
       ...node,
-      x: position.x - 110,
-      y: position.y - 63
+      x: position.x - NODE_WIDTH / 2,
+      y: position.y - NODE_HEIGHT / 2
     };
   });
 }
@@ -191,6 +212,7 @@ function GraphEditorInner({
   const [query, setQuery] = useState("");
   const [isPending, startTransition] = useTransition();
   const reactFlow = useReactFlow();
+  const previousNodeCount = useRef(0);
 
   const analysis = useMemo(
     () => analyzeGraph(editorNodes, editorEdges),
@@ -209,15 +231,17 @@ function GraphEditorInner({
     () => toFlowEdges(editorEdges, focusId),
     [editorEdges, focusId]
   );
-  const [nodes, setNodes, onNodesChangeBase] = useNodesState(flowNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(flowEdges);
+  const selectedNode = editorNodes.find((node) => node.id === selectedNodeId);
 
   useEffect(() => {
-    setNodes(flowNodes);
-    setEdges(flowEdges);
-  }, [flowEdges, flowNodes, setEdges, setNodes]);
+    if (editorNodes.length > 0 && editorNodes.length !== previousNodeCount.current) {
+      window.requestAnimationFrame(() => {
+        reactFlow.fitView({duration: 320, padding: 0.22});
+      });
+    }
 
-  const selectedNode = editorNodes.find((node) => node.id === selectedNodeId);
+    previousNodeCount.current = editorNodes.length;
+  }, [editorNodes.length, reactFlow]);
 
   function markSaving() {
     setSaveStatus(copy.saving);
@@ -228,7 +252,6 @@ function GraphEditorInner({
   }
 
   function onNodesChange(changes: NodeChange[]) {
-    onNodesChangeBase(changes);
     setEditorNodes((current) =>
       current.map((node) => {
         const change = changes.find(
@@ -263,28 +286,38 @@ function GraphEditorInner({
         type: newType,
         title: copy.typeLabels[newType],
         content: "",
-        x: 80 + editorNodes.length * 24,
-        y: 80 + editorNodes.length * 18
+        x: 80 + (editorNodes.length % 4) * (NODE_WIDTH + 40),
+        y: 80 + Math.floor(editorNodes.length / 4) * (NODE_HEIGHT + 40)
       });
+      const nextNode = {
+        id: node.id,
+        type: node.type as CaseNodeType,
+        title: node.title,
+        content: node.content,
+        x: node.x,
+        y: node.y
+      };
       setEditorNodes((current) => [
         ...current,
-        {
-          id: node.id,
-          type: node.type as CaseNodeType,
-          title: node.title,
-          content: node.content,
-          x: node.x,
-          y: node.y
-        }
+        nextNode
       ]);
       setSelectedNodeId(node.id);
+      window.requestAnimationFrame(() => {
+        reactFlow.setCenter(nextNode.x + NODE_WIDTH / 2, nextNode.y + NODE_HEIGHT / 2, {
+          duration: 360,
+          zoom: 1
+        });
+      });
       markSaved();
     });
   }
 
-  function updateSelected(formData: FormData) {
+  function updateSelected(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
     if (!selectedNode) return;
 
+    const formData = new FormData(event.currentTarget);
     const title = String(formData.get("title") ?? "").trim();
     const content = String(formData.get("content") ?? "").trim();
     const typeValue = String(formData.get("type") ?? selectedNode.type);
@@ -313,6 +346,7 @@ function GraphEditorInner({
             : node
         )
       );
+      setSelectedNodeId(updated.id);
       markSaved();
     });
   }
@@ -358,7 +392,6 @@ function GraphEditorInner({
           label: edge.label
         }
       ]);
-      setEdges((current) => addEdge({...connection, id: edge.id}, current));
       markSaved();
     });
   }
@@ -380,14 +413,6 @@ function GraphEditorInner({
   function reorderEvidence() {
     const nextNodes = layoutNodes(editorNodes, editorEdges);
     setEditorNodes(nextNodes);
-    setNodes(
-      nextNodes.map((node) => ({
-        id: node.id,
-        type: "clue",
-        position: {x: node.x, y: node.y},
-        data: {}
-      }))
-    );
 
     startTransition(async () => {
       markSaving();
@@ -402,8 +427,19 @@ function GraphEditorInner({
   }
 
   function onSelectionChange(selection: OnSelectionChangeParams) {
-    setSelectedNodeId(selection.nodes[0]?.id ?? null);
-    setSelectedEdgeId(selection.edges[0]?.id ?? null);
+    const nodeId = selection.nodes[0]?.id;
+    const edgeId = selection.edges[0]?.id;
+
+    if (nodeId) {
+      setSelectedNodeId(nodeId);
+      setSelectedEdgeId(null);
+      return;
+    }
+
+    if (edgeId) {
+      setSelectedEdgeId(edgeId);
+      setSelectedNodeId(null);
+    }
   }
 
   function focusSearchResult() {
@@ -414,7 +450,7 @@ function GraphEditorInner({
     );
 
     if (found) {
-      reactFlow.setCenter(found.x + 110, found.y + 64, {
+      reactFlow.setCenter(found.x + NODE_WIDTH / 2, found.y + NODE_HEIGHT / 2, {
         zoom: 1.2,
         duration: 500
       });
@@ -423,11 +459,11 @@ function GraphEditorInner({
   }
 
   return (
-    <div className="grid min-h-[calc(100vh-96px)] gap-4 lg:grid-cols-[1fr_340px]">
-      <section className="relative overflow-hidden rounded-lg border border-[var(--cb-border)]">
+    <div className="editor-grid">
+      <section className="forensic-canvas">
         {editorNodes.length === 0 ? (
           <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center p-8 text-center">
-            <div className="max-w-sm rounded-lg border border-[var(--cb-border)] bg-[rgba(15,17,16,0.84)] p-6">
+            <div className="empty-state max-w-sm rounded-lg p-6">
               <p className="text-xl font-black">{copy.empty}</p>
               <p className="mt-2 text-[var(--cb-muted)]">{copy.emptyHint}</p>
             </div>
@@ -435,14 +471,28 @@ function GraphEditorInner({
         ) : null}
 
         <ReactFlow
-          edges={edges}
-          fitView
+          defaultViewport={{x: 80, y: 80, zoom: 1}}
+          edges={flowEdges}
+          maxZoom={1.8}
+          minZoom={0.25}
           nodeTypes={nodeTypes}
-          nodes={nodes}
+          nodes={flowNodes}
           onConnect={connectNodes}
-          onEdgesChange={onEdgesChange}
+          onEdgeClick={(_, edge) => {
+            setSelectedEdgeId(edge.id);
+            setSelectedNodeId(null);
+          }}
+          onEdgesChange={() => undefined}
+          onNodeClick={(_, node) => {
+            setSelectedNodeId(node.id);
+            setSelectedEdgeId(null);
+          }}
           onNodeDragStop={(_, node) => savePosition(node)}
           onNodesChange={onNodesChange}
+          onPaneClick={() => {
+            setSelectedNodeId(null);
+            setSelectedEdgeId(null);
+          }}
           onSelectionChange={onSelectionChange}
         >
           <Background color="#3f4844" gap={28} />
@@ -457,10 +507,13 @@ function GraphEditorInner({
         </ReactFlow>
       </section>
 
-      <aside className="grid content-start gap-4">
-        <div className="panel p-4">
+      <aside className="editor-sidebar">
+        <div className="editor-panel panel">
           <div className="flex items-center justify-between gap-3">
-            <p className="eyebrow">{saveStatus}</p>
+            <div className="flex items-center gap-2">
+              <span className="status-dot" />
+              <p className="eyebrow">{saveStatus}</p>
+            </div>
             <Save className="h-4 w-4 text-[var(--cb-muted)]" />
           </div>
           <div className="mt-4 flex gap-2">
@@ -491,7 +544,7 @@ function GraphEditorInner({
           </div>
         </div>
 
-        <div className="panel p-4">
+        <div className="editor-panel panel">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="font-black">{copy.analysis}</h2>
             <BrainCircuit className="h-5 w-5 text-[var(--cb-teal)]" />
@@ -522,7 +575,7 @@ function GraphEditorInner({
           </button>
         </div>
 
-        <div className="panel p-4">
+        <div className="editor-panel panel">
           <label className="block space-y-2">
             <span className="text-sm font-bold text-[var(--cb-muted)]">
               {copy.searchNode}
@@ -545,7 +598,7 @@ function GraphEditorInner({
           </label>
         </div>
 
-        <div className="panel p-4">
+        <div className="editor-panel panel">
           <h2 className="font-black">{copy.suggestions}</h2>
           <div className="mt-3 grid gap-2">
             {suggestions.length === 0 ? (
@@ -553,7 +606,7 @@ function GraphEditorInner({
             ) : (
               suggestions.map((suggestion) => (
                 <button
-                  className="rounded-md border border-[var(--cb-border)] p-3 text-left text-sm hover:border-[var(--cb-teal)]"
+                  className="evidence-link-card text-sm"
                   key={`${suggestion.source.id}-${suggestion.target.id}`}
                   onClick={() =>
                     connectNodes({
@@ -566,7 +619,7 @@ function GraphEditorInner({
                   type="button"
                 >
                   <span className="font-bold">{suggestion.source.title}</span>
-                  <span className="mx-2 text-[var(--cb-muted)]">→</span>
+                  <span className="mx-2 text-[var(--cb-muted)]">&rarr;</span>
                   <span className="font-bold">{suggestion.target.title}</span>
                   <span className="mt-1 block text-[var(--cb-muted)]">
                     {suggestion.reason}
@@ -577,9 +630,13 @@ function GraphEditorInner({
           </div>
         </div>
 
-        <div className="panel p-4">
+        <div className="editor-panel panel">
           {selectedNode ? (
-            <form action={updateSelected} className="grid gap-3">
+            <form
+              className="grid gap-3"
+              key={selectedNode.id}
+              onSubmit={updateSelected}
+            >
               <label className="space-y-2">
                 <span className="text-sm font-bold text-[var(--cb-muted)]">
                   {copy.nodeTitle}
@@ -587,7 +644,6 @@ function GraphEditorInner({
                 <input
                   className="input"
                   defaultValue={selectedNode.title}
-                  key={`${selectedNode.id}-title`}
                   name="title"
                   required
                 />
@@ -599,7 +655,6 @@ function GraphEditorInner({
                 <select
                   className="select"
                   defaultValue={selectedNode.type}
-                  key={`${selectedNode.id}-type`}
                   name="type"
                 >
                   {caseNodeTypes.map((type) => (
@@ -616,12 +671,11 @@ function GraphEditorInner({
                 <textarea
                   className="textarea"
                   defaultValue={selectedNode.content ?? ""}
-                  key={`${selectedNode.id}-content`}
                   name="content"
                 />
               </label>
               <div className="flex gap-2">
-                <button className="button flex-1" disabled={isPending}>
+                <button className="button flex-1" disabled={isPending} type="submit">
                   {copy.save}
                 </button>
                 <button
@@ -657,7 +711,7 @@ function GraphEditorInner({
 
 function Stat({label, value}: {label: string; value: number}) {
   return (
-    <div className="rounded-md border border-[var(--cb-border)] bg-[rgba(15,17,16,0.42)] p-3">
+    <div className="mini-metric">
       <p className="text-xs font-bold text-[var(--cb-muted)]">{label}</p>
       <p className="mt-1 text-2xl font-black">{value}</p>
     </div>

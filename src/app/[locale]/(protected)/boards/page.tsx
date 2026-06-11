@@ -59,7 +59,7 @@ export default async function BoardsPage({
 
   return (
     <main className="container page-section">
-      <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+      <div className="page-heading">
         <div>
           <p className="eyebrow">{t("title")}</p>
           <h1 className="mt-3 text-4xl font-black">{t("subtitle")}</h1>
@@ -86,19 +86,19 @@ export default async function BoardsPage({
 
         <section className="grid gap-4">
           {boards.length === 0 ? (
-            <div className="panel flex min-h-64 flex-col items-center justify-center p-8 text-center">
-              <FileText className="h-10 w-10 text-[var(--cb-teal)]" />
+            <div className="empty-state panel flex min-h-64 flex-col items-center justify-center p-8 text-center">
+              <FileText className="h-10 w-10 text-[var(--cb-teal-strong)]" />
               <p className="mt-4 text-lg font-bold">{t("empty")}</p>
             </div>
           ) : (
             boards.map((board) => (
               <article
-                className="panel flex flex-col justify-between gap-4 p-5 md:flex-row md:items-center"
+                className="case-card panel flex flex-col justify-between gap-4 p-5 md:flex-row md:items-center"
                 key={board.id}
               >
                 <div>
                   <p className="text-xs font-black uppercase text-[var(--cb-teal)]">
-                    Case File
+                    {t("caseFile")}
                   </p>
                   <h2 className="mt-1 text-2xl font-black">{board.title}</h2>
                   {board.description ? (
@@ -106,9 +106,13 @@ export default async function BoardsPage({
                       {board.description}
                     </p>
                   ) : null}
-                  <div className="mt-3 flex gap-3 text-sm text-[var(--cb-muted)]">
-                    <span>{t("nodeCount", {count: board._count.nodes})}</span>
-                    <span>{t("edgeCount", {count: board._count.edges})}</span>
+                  <div className="mt-4 flex flex-wrap gap-2 text-sm text-[var(--cb-muted)]">
+                    <span className="rounded-md border border-[var(--cb-border)] bg-[rgba(9,13,12,0.42)] px-2.5 py-1">
+                      {t("nodeCount", {count: board._count.nodes})}
+                    </span>
+                    <span className="rounded-md border border-[var(--cb-border)] bg-[rgba(9,13,12,0.42)] px-2.5 py-1">
+                      {t("edgeCount", {count: board._count.edges})}
+                    </span>
                   </div>
                 </div>
                 <div className="flex gap-2">

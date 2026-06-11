@@ -9,7 +9,7 @@ export function LocaleSwitcher({locale}: {locale: Locale}) {
   const pathname = usePathname();
 
   return (
-    <div className="flex items-center gap-1 rounded-md border border-[var(--cb-border)] bg-[rgba(34,40,36,0.72)] p-1">
+    <div className="flex items-center gap-1 rounded-md border border-[var(--cb-border)] bg-[rgba(9,13,12,0.5)] p-1">
       <Languages className="mx-1 h-4 w-4 text-[var(--cb-muted)]" />
       {locales.map((targetLocale) => {
         const segments = pathname.split("/");

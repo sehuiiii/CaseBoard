@@ -50,7 +50,7 @@ export default async function BoardDetailPage({
           <p className="eyebrow">{t("caseFile")}</p>
           <h1 className="mt-2 text-3xl font-black">{board.title}</h1>
           {board.description ? (
-            <p className="mt-2 text-[var(--cb-muted)]">{board.description}</p>
+            <p className="section-caption mt-2">{board.description}</p>
           ) : null}
         </div>
       </div>

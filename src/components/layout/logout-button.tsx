@@ -22,7 +22,7 @@ export function LogoutButton({
       type="button"
     >
       <LogOut className="h-4 w-4" />
-      {label}
+      <span className="hidden sm:inline">{label}</span>
     </button>
   );
 }

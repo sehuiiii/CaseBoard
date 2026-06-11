@@ -45,15 +45,17 @@ export default async function MyPage({
       <div className="mb-8">
         <p className="eyebrow">{user.email}</p>
         <h1 className="mt-3 text-4xl font-black">{t("title")}</h1>
-        <p className="mt-3 text-[var(--cb-muted)]">{t("subtitle")}</p>
+        <p className="section-caption mt-3">{t("subtitle")}</p>
       </div>
 
       <section className="grid-cards">
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <article className="panel p-5" key={stat.label}>
-              <Icon className="h-7 w-7 text-[var(--cb-teal)]" />
+            <article className="stat-card panel p-5" key={stat.label}>
+              <span className="stat-icon">
+                <Icon className="h-5 w-5 text-[var(--cb-teal-strong)]" />
+              </span>
               <p className="mt-4 text-sm font-bold text-[var(--cb-muted)]">
                 {stat.label}
               </p>
@@ -64,20 +66,32 @@ export default async function MyPage({
       </section>
 
       <section className="panel mt-8 p-5">
-        <h2 className="text-xl font-black">{t("recentBoards")}</h2>
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-xl font-black">{t("recentBoards")}</h2>
+          <span className="status-dot" />
+        </div>
         <div className="mt-4 grid gap-3">
-          {recentBoards.map((board) => (
-            <Link
-              className="rounded-md border border-[var(--cb-border)] bg-[rgba(15,17,16,0.42)] p-4 hover:border-[var(--cb-teal)]"
-              href={`/${locale}/boards/${board.id}`}
-              key={board.id}
-            >
-              <p className="font-bold">{board.title}</p>
-              <p className="mt-1 text-sm text-[var(--cb-muted)]">
-                {board._count.nodes} clues / {board._count.edges} links
-              </p>
-            </Link>
-          ))}
+          {recentBoards.length === 0 ? (
+            <p className="empty-state rounded-md p-4 text-sm text-[var(--cb-muted)]">
+              {t("emptyRecent")}
+            </p>
+          ) : (
+            recentBoards.map((board) => (
+              <Link
+                className="case-card panel p-4"
+                href={`/${locale}/boards/${board.id}`}
+                key={board.id}
+              >
+                <p className="font-bold">{board.title}</p>
+                <p className="mt-1 text-sm text-[var(--cb-muted)]">
+                  {t("recentSummary", {
+                    edges: board._count.edges,
+                    nodes: board._count.nodes
+                  })}
+                </p>
+              </Link>
+            ))
+          )}
         </div>
       </section>
     </main>
