@@ -63,6 +63,29 @@ NEXT_PUBLIC_APP_URL="http://localhost:3000"
 
 이 프로젝트의 PostgreSQL은 기본적으로 호스트 `5435` 포트를 사용합니다. 다른 PostgreSQL이 `5432`를 사용 중이어도 충돌하지 않도록 `docker-compose.yml`에서 `5435:5432`로 매핑합니다.
 
+## Vercel 배포
+
+Vercel에 배포할 때는 로컬 Docker DB 주소가 아니라 외부에서 접근 가능한 PostgreSQL 주소를 `DATABASE_URL`에 설정해야 합니다. Vercel Postgres, Neon, Supabase 등 PostgreSQL 호환 DB를 사용할 수 있습니다.
+
+Vercel 프로젝트 환경 변수:
+
+```bash
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
+AUTH_SECRET="배포용 긴 랜덤 문자열"
+NEXT_PUBLIC_APP_URL="https://배포된-도메인"
+```
+
+권장 배포 순서:
+
+```bash
+npm run lint
+npx tsc --noEmit --pretty false
+npm run build
+npm run prisma:deploy
+```
+
+GitHub 저장소를 Vercel에 연결하면 `main` 브랜치에 push할 때 자동 배포할 수 있습니다. `postinstall`에서 `prisma generate`를 실행하므로 Vercel 설치 단계에서 Prisma Client가 함께 생성됩니다.
+
 ## 데이터베이스
 
 주요 모델은 다음과 같습니다.
