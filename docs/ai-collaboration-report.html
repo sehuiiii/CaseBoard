@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>인공지능과 함께한 설계 · 구현 · 테스트 보고서</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
+    color: #1f2933;
+    line-height: 1.7;
+    font-size: 10.5pt;
+    margin: 0;
+  }
+  h1 {
+    font-size: 22pt; margin: 0 0 4px; color: #111827;
+    border-bottom: 3px solid #111827; padding-bottom: 10px;
+  }
+  h2 {
+    font-size: 15pt; margin: 26px 0 10px; color: #111827;
+    border-left: 5px solid #2563eb; padding-left: 10px;
+  }
+  h3 { font-size: 12pt; margin: 18px 0 6px; color: #1e3a8a; }
+  h4 { font-size: 11pt; margin: 14px 0 4px; color: #374151; }
+  p { margin: 6px 0; }
+  ul { margin: 6px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  .subtitle { color: #6b7280; font-size: 10.5pt; margin: 10px 0 0; }
+  .meta { color: #6b7280; font-size: 9.5pt; margin: 2px 0 0; }
+  table {
+    border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 9.5pt;
+  }
+  th, td { border: 1px solid #d1d5db; padding: 6px 9px; text-align: left; vertical-align: top; }
+  th { background: #f3f4f6; font-weight: 600; }
+  tr:nth-child(even) td { background: #fafafa; }
+  code {
+    font-family: "SF Mono", "JetBrains Mono", Menlo, monospace;
+    background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-size: 9pt;
+    color: #be123c;
+  }
+  pre {
+    background: #0f172a; color: #e2e8f0; padding: 12px 14px; border-radius: 8px;
+    overflow-x: auto; font-size: 8.6pt; line-height: 1.5; margin: 8px 0;
+  }
+  pre code { background: none; color: inherit; padding: 0; }
+  .callout {
+    background: #eff6ff; border-left: 4px solid #2563eb; border-radius: 0 6px 6px 0;
+    padding: 9px 14px; margin: 10px 0; font-size: 9.8pt; color: #1e3a5f;
+  }
+  .diff-add { color: #16a34a; }
+  .diff-del { color: #dc2626; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 22px 0; }
+  .avoid-break { break-inside: avoid; }
+  .cover {
+    height: 252mm; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; text-align: center;
+    page-break-after: always;
+  }
+  .cover .badge {
+    font-size: 11pt; letter-spacing: 3px; color: #2563eb; font-weight: 600;
+    margin-bottom: 18px;
+  }
+  .cover .title { font-size: 30pt; font-weight: 700; color: #111827; margin: 0; border: none; }
+  .cover .tagline { font-size: 12pt; color: #6b7280; margin: 14px 0 0; max-width: 80%; }
+  .cover .rule { width: 64px; height: 4px; background: #111827; margin: 30px 0; border: none; }
+  .cover .info { font-size: 12.5pt; color: #374151; line-height: 2.1; }
+  .cover .info b { color: #111827; display: inline-block; width: 92px; text-align: right; margin-right: 14px; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="badge">AI 협업 개발 보고서</div>
+  <p class="title">CaseBoard</p>
+  <p class="tagline">범죄 수사 보드 스타일 UI를 활용한<br>그래프 기반 프로젝트 관리 웹 서비스</p>
+  <hr class="rule">
+  <div class="info">
+    <div><b>프로젝트</b>CaseBoard</div>
+    <div><b>학번</b>3201</div>
+    <div><b>이름</b>박세희</div>
+    <div><b>작성일</b>2026-06-15</div>
+  </div>
+</div>
+
+<h1>🧩 인공지능과 함께한 설계 · 구현 · 테스트 보고서</h1>
+<p class="subtitle"><b>프로젝트: CaseBoard</b> — 범죄 수사 보드 스타일 UI를 활용한 그래프 기반 프로젝트 관리 웹 서비스</p>
+<p class="meta">유형: 개인 프로젝트 · 작성일: 2026-06-15</p>
+
+<hr>
+
+<h2>1. 개요</h2>
+<p>본 문서는 CaseBoard를 개발하며 <b>AI 코딩 어시스턴트를 설계 · 구현 · 테스트 전 단계에 어떻게 활용했는지</b>를 정리한 보고서입니다. AI는 코드를 대신 써 주는 도구를 넘어, 설계 의사결정의 토론 상대이자 버그를 함께 추적하는 페어 프로그래머로 활용했습니다.</p>
+<p><b>서비스 한 줄 소개</b> — 사용자가 보드를 만들고 작업(Task)·버그(Bug)·사람(Person)·일정(Event)을 단서 카드처럼 배치한 뒤, 관계선으로 연결해 프로젝트 요소 간 흐름과 의존 관계를 시각적으로 관리하는 서비스.</p>
+
+<h3>기술 스택</h3>
+<table class="avoid-break">
+  <tr><th>구분</th><th>기술</th></tr>
+  <tr><td>프레임워크</td><td>Next.js 16 (App Router)</td></tr>
+  <tr><td>언어</td><td>TypeScript</td></tr>
+  <tr><td>ORM / DB</td><td>Prisma + PostgreSQL</td></tr>
+  <tr><td>인증</td><td>Auth.js (NextAuth) Credentials</td></tr>
+  <tr><td>그래프 UI</td><td>React Flow (@xyflow/react), dagre</td></tr>
+  <tr><td>스타일</td><td>Tailwind CSS</td></tr>
+  <tr><td>국제화</td><td>next-intl (한국어 / 영어)</td></tr>
+  <tr><td>배포</td><td>Vercel, Docker Compose (로컬 DB)</td></tr>
+</table>
+
+<div class="callout">
+  <b>💡 AI 활용 원칙</b><br>
+  ① AI가 제안하면 사람이 검증한다 — 모든 산출물은 빌드·타입체크·동작 확인 후 반영<br>
+  ② "왜"를 항상 물었다 — 선택의 근거(트레이드오프)를 함께 설명하도록 요청<br>
+  ③ 협업 기록을 남겼다 — AI가 함께 쓴 커밋에 <code>Co-Authored-By</code> 트레일러 표기
+</div>
+
+<hr>
+
+<h2>2. 설계 단계에서의 AI 활용</h2>
+
+<h3>2.1 도메인 모델 설계</h3>
+<p>"수사 보드"라는 은유를 실제 데이터 모델로 환원. 핵심 논점은 <i>"노드 타입을 어떻게 표현할 것인가"</i>.</p>
+<ul>
+  <li><b>검토 대안</b>: (a) 자유 텍스트 태그 (b) 별도 테이블 분리 (c) Enum 고정 타입</li>
+  <li><b>결론</b>: 타입이 4종으로 한정적이고 색상·분석 규칙이 타입에 강하게 결합되므로 <b>Prisma <code>enum NodeType</code></b> 채택 → 마이그레이션 안정성 + 타입 안전성 동시 확보</li>
+</ul>
+<pre><code>enum NodeType { TASK  BUG  PERSON  EVENT }
+
+model Board    { id, title, description, ownerId, nodes[], edges[] ... }
+model CaseNode { id, type: NodeType, title, content, x, y, boardId ... }
+model CaseEdge { id, sourceNodeId, targetNodeId, label, boardId ... }</code></pre>
+
+<h3>2.2 노드 위치 저장 방식의 분리 설계</h3>
+<p>드래그 좌표는 자주·빠르게 갱신되고, CRUD는 폼 기반의 무거운 작업이라는 점에 주목해 <b>책임을 분리</b>.</p>
+<ul>
+  <li><b>노드 좌표 갱신</b> → Route Handler <code>PUT /api/boards/[boardId]/nodes/[nodeId]/position</code> (리렌더 없이 좌표만 영속화)</li>
+  <li><b>보드/노드/관계선 CRUD</b> → Server Action (<code>board-actions.ts</code>) → <code>revalidatePath</code>로 일관 갱신</li>
+</ul>
+<p>→ "Create/Update/Delete"와 "Server Action 및 Route Handler 사용" 제출 요건을 동시에 만족.</p>
+
+<h3>2.3 분석 알고리즘 설계</h3>
+<p>복잡한 그래프 알고리즘 대신 <b>설명 가능한 차수(degree) 기반 휴리스틱</b> 채택.</p>
+<ul>
+  <li><b>핵심 단서(critical)</b>: 연결 차수 ≥ 3</li>
+  <li><b>미연결 단서(isolated)</b>: 연결 차수 = 0</li>
+  <li><b>의심 관계 제안</b>: 한 노드의 제목·내용에 다른 노드의 제목이 포함되면 후보 제안 (기존 연결 제외, 최대 5건)</li>
+</ul>
+<div class="callout">💡 <b>설계 근거</b>: 시연 시 "왜 이게 핵심 단서인가"를 한 문장으로 설명할 수 있어야 한다는 요구를 AI와의 토론에서 도출 → 블랙박스 점수 대신 차수 규칙 채택.</div>
+
+<hr>
+
+<h2>3. 구현 단계에서의 AI 활용</h2>
+
+<h3>3.1 인증 및 접근 제어</h3>
+<ul>
+  <li>Auth.js Credentials + Prisma Adapter, 비밀번호 <code>bcryptjs</code> 해시(<code>password.ts</code>)</li>
+  <li>보호 라우트 그룹 <code>(protected)</code> 레이아웃에서 세션 확인 → 비로그인 차단</li>
+  <li><b>소유권 검증을 쿼리 레벨에서 강제</b> → 다른 사용자의 노드 조작 불가</li>
+</ul>
+<pre><code>const result = await prisma.caseNode.updateMany({
+  where: { id: nodeId, boardId, board: { ownerId: user.id } },
+  data: { x: body.x, y: body.y }
+});
+if (result.count === 0) {
+  return NextResponse.json({message: "Not found"}, {status: 404});
+}</code></pre>
+<div class="callout">💡 <b>AI 협업 포인트</b>: 처음엔 <code>findUnique</code> 후 코드로 소유권을 비교했으나, AI가 "조건을 쿼리에 합치면 권한 없는 접근과 존재하지 않는 리소스를 동일하게 404로 처리해 정보 노출도 줄어든다"고 제안 → <code>updateMany</code> + <code>where</code> 방식으로 개선.</div>
+
+<h3>3.2 입력 검증 유틸리티</h3>
+<p>반복 패턴을 순수 함수로 분리(<code>validation.ts</code>)해 Server Action 곳곳에서 재사용.</p>
+<pre><code>readString(formData, key)   // FormData → trim된 문자열
+normalizeEmail(email)       // 소문자 + trim
+isValidEmail(email)         // 기본 형식 검증</code></pre>
+
+<h3>3.3 국제화(i18n)</h3>
+<p>next-intl로 한국어/영어 지원. 잘못된 locale도 안전하게 기본값(<code>ko</code>)으로 fallback. 로딩/에러/404 UI를 locale별 제공.</p>
+
+<h3>3.4 그래프 에디터</h3>
+<p>React Flow 기반 드래그 앤 드롭, 관계선 생성/선택 삭제, 타입별 색상 구분(<code>clue-node.tsx</code>). dagre로 자동 레이아웃 보조.</p>
+
+<hr>
+
+<h2>4. 테스트 · 검증 단계에서의 AI 활용</h2>
+<p>별도 단위 테스트 대신 <b>정적 검증 + 빌드 + 실제 배포 환경 동작 확인</b>의 다층 검증 체계를 운용하고, 각 단계에서 AI가 실패 원인 분석을 도왔습니다.</p>
+
+<h3>4.1 검증 파이프라인</h3>
+<pre><code>npm run lint                      # ESLint 정적 분석
+npx tsc --noEmit --pretty false   # 타입 전수 검사
+npm run build                     # Next.js 16 Turbopack 프로덕션 빌드
+npm run prisma:deploy             # 마이그레이션 적용</code></pre>
+
+<h3>4.2 AI와 함께 추적·해결한 대표 버그</h3>
+
+<h4 class="avoid-break">사례 ① 빈 환경변수로 인한 전 페이지 크래시 (Invalid URL)</h4>
+<div class="avoid-break">
+<ul>
+  <li><b>증상</b>: Vercel 배포 후 모든 페이지가 <code>TypeError: Invalid URL</code>로 죽음</li>
+  <li><b>근본 원인</b>: <code>NEXT_PUBLIC_APP_URL</code>이 <i>설정은 됐으나 빈 문자열(<code>""</code>)</i>. <code>?? "..."</code>는 <code>null</code>/<code>undefined</code>만 걸러서 빈 문자열이 통과 → <code>new URL("")</code> 예외</li>
+  <li><b>해결</b>: <code>??</code> → <code>||</code>로 변경, <code>layout.tsx</code>·<code>robots.ts</code>·<code>sitemap.ts</code> 세 곳에 동일 적용</li>
+</ul>
+<pre><code><span class="diff-del">- const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";</span>
+<span class="diff-add">+ const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";</span></code></pre>
+<div class="callout">💡 <b>학습 포인트</b>: <code>??</code>(nullish)와 <code>||</code>(falsy)의 차이가 실제 운영 장애로 이어짐을 체득. 로컬에선 변수가 채워져 재현 안 되던 버그를 배포 환경 기준으로 분석.</div>
+</div>
+
+<h4>사례 ② 프레임워크 정보 노출 차단</h4>
+<p><code>next.config.ts</code>에 <code>poweredByHeader: false</code> → <code>X-Powered-By</code> 헤더 제거, 공격 표면 축소.</p>
+
+<h4>사례 ③ 배포 자동화</h4>
+<p><code>vercel.json</code> 빌드 단계에서 Prisma 마이그레이션 실행 → DB 스키마와 코드 불일치 예방.</p>
+
+<h3>4.3 수동 동작 확인 시나리오</h3>
+<table class="avoid-break">
+  <tr><th>#</th><th>시나리오</th><th>기대 결과</th></tr>
+  <tr><td>1</td><td>회원가입 → 로그인 → 로그아웃</td><td>세션 생성/파기 정상</td></tr>
+  <tr><td>2</td><td>비로그인으로 <code>/boards</code> 접근</td><td>로그인으로 차단</td></tr>
+  <tr><td>3</td><td>보드 생성 / 검색 / 삭제</td><td>목록 즉시 반영</td></tr>
+  <tr><td>4</td><td>노드 4종 생성 후 색상 구분</td><td>타입별 색상 일치</td></tr>
+  <tr><td>5</td><td>노드 드래그 이동 후 새로고침</td><td>좌표 영속화</td></tr>
+  <tr><td>6</td><td>관계선 생성/삭제 후 자동 분석</td><td>핵심/미연결/제안 갱신</td></tr>
+  <tr><td>7</td><td>한국어 ↔ 영어 전환</td><td>라우팅/문구 정상</td></tr>
+  <tr><td>8</td><td>로딩/에러/404 화면</td><td>전용 UI 노출</td></tr>
+</table>
+
+<hr>
+
+<h2>5. 회고: AI 협업의 효과와 한계</h2>
+<h3>효과</h3>
+<ul>
+  <li>설계 대안 탐색 속도 — 모델링·책임 분리의 트레이드오프를 빠르게 비교</li>
+  <li>근본 원인 분석 — <code>??</code> vs <code>||</code>처럼 놓치기 쉬운 런타임 함정을 환경 차이 관점에서 규명</li>
+  <li>일관성 — 같은 수정을 영향받는 모든 파일에 빠짐없이 전파</li>
+</ul>
+<h3>한계와 대응</h3>
+<ul>
+  <li>AI 제안이 항상 옳진 않아 <b>빌드·타입체크·실제 동작 확인을 최종 게이트</b>로 둠</li>
+  <li>배포 환경 특유 문제(빈 환경변수 등)는 로컬 미재현 → <b>실제 배포본 기준 검증</b> 병행</li>
+</ul>
+<h3>협업 기록의 추적성</h3>
+<p>AI와 함께 쓴 커밋은 <code>Co-Authored-By</code> 트레일러로 표기해 git 히스토리에서 기여를 확인 가능.</p>
+
+</body>
+</html>
