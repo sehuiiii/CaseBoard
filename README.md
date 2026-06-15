@@ -17,7 +17,7 @@ CaseBoard는 범죄 수사 보드 스타일의 UI를 활용한 그래프 기반 
 - 마이페이지 총 보드 수, 총 노드 수, 총 관계 수, 최근 보드 조회
 - 한국어 / 영어 다국어 지원
 - loading, error, not-found UI
-- favicon, Open Graph, sitemap.xml, robots.txt 제공
+- favicon, Open Graph, sitemap.xml, robots.txt 제공 
 
 ## 페이지 구성
 
