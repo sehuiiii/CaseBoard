@@ -21,7 +21,7 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
   const {locale} = await params;
   const safeLocale = isLocale(locale) ? locale : "ko";
   const t = await getTranslations({locale: safeLocale, namespace: "meta"});
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
   return {
     metadataBase: new URL(appUrl),
