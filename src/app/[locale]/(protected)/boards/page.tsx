@@ -13,14 +13,14 @@ export default async function BoardsPage({
   searchParams
 }: {
   params: Promise<{locale: string}>;
-  searchParams: Promise<{q?: string}>;
+  searchParams: Promise<{q?: string | string[]}>;
 }) {
   const {locale: rawLocale} = await params;
   const {q = ""} = await searchParams;
   const locale: Locale = isLocale(rawLocale) ? rawLocale : "ko";
   const user = await requireUser(locale);
   const t = await getTranslations({locale, namespace: "boards"});
-  const keyword = q.trim();
+  const keyword = (Array.isArray(q) ? q[0] ?? "" : q).trim();
 
   const boards = await prisma.board.findMany({
     where: {
@@ -69,6 +69,11 @@ export default async function BoardsPage({
             label={t("search")}
             placeholder={t("searchPlaceholder")}
           />
+          {keyword ? (
+            <p className="mt-2 text-sm font-bold text-[var(--cb-muted)]">
+              {t("searchResult", {count: boards.length, keyword})}
+            </p>
+          ) : null}
         </div>
       </div>
 
@@ -88,7 +93,9 @@ export default async function BoardsPage({
           {boards.length === 0 ? (
             <div className="empty-state panel flex min-h-64 flex-col items-center justify-center p-8 text-center">
               <FileText className="h-10 w-10 text-[var(--cb-teal-strong)]" />
-              <p className="mt-4 text-lg font-bold">{t("empty")}</p>
+              <p className="mt-4 text-lg font-bold">
+                {keyword ? t("emptySearch") : t("empty")}
+              </p>
             </div>
           ) : (
             boards.map((board) => (

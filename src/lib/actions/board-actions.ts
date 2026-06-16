@@ -203,6 +203,26 @@ export async function createEdgeAction(
     throw new Error("Invalid evidence link");
   }
 
+  const existingEdge = await prisma.caseEdge.findFirst({
+    where: {
+      boardId,
+      OR: [
+        {
+          sourceNodeId,
+          targetNodeId
+        },
+        {
+          sourceNodeId: targetNodeId,
+          targetNodeId: sourceNodeId
+        }
+      ]
+    }
+  });
+
+  if (existingEdge) {
+    return existingEdge;
+  }
+
   const [edge] = await prisma.$transaction([
     prisma.caseEdge.upsert({
       where: {

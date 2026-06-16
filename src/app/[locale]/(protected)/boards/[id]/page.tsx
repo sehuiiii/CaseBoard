@@ -81,6 +81,13 @@ export default async function BoardDetailPage({
           saved: t("saved"),
           selectNode: t("selectNode"),
           edgeDeleteHint: t("edgeDeleteHint"),
+          connectTitle: t("connectTitle"),
+          connectFrom: t("connectFrom"),
+          connectTo: t("connectTo"),
+          noConnectTarget: t("noConnectTarget"),
+          searchResults: t("searchResults"),
+          noSearchResults: t("noSearchResults"),
+          saveError: t("saveError"),
           typeLabels
         }}
         initialEdges={board.edges.map((edge) => ({

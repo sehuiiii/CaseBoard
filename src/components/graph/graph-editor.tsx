@@ -9,6 +9,7 @@ import {
   useReactFlow,
   type Connection,
   type Edge,
+  MarkerType,
   type Node,
   type NodeChange,
   type NodeTypes,
@@ -84,6 +85,13 @@ type EditorCopy = {
   saved: string;
   selectNode: string;
   edgeDeleteHint: string;
+  connectTitle: string;
+  connectFrom: string;
+  connectTo: string;
+  noConnectTarget: string;
+  searchResults: string;
+  noSearchResults: string;
+  saveError: string;
   typeLabels: Record<CaseNodeType, string>;
 };
 
@@ -103,7 +111,8 @@ function toFlowNodes(
   analysis: ReturnType<typeof analyzeGraph>,
   copy: EditorCopy,
   focusId: string | null,
-  edges: EditorEdge[]
+  edges: EditorEdge[],
+  highlightedIds: Set<string>
 ): Node[] {
   const relatedIds = new Set<string>();
 
@@ -139,21 +148,33 @@ function toFlowNodes(
         typeLabel: copy.typeLabels[node.type],
         isCritical,
         isIsolated,
+        highlighted: highlightedIds.has(node.id),
         dimmed: focusId ? !relatedIds.has(node.id) : false
       }
     }
   });
 }
 
-function toFlowEdges(editorEdges: EditorEdge[], focusId: string | null): Edge[] {
+function toFlowEdges(
+  editorEdges: EditorEdge[],
+  focusId: string | null,
+  selectedEdgeId: string | null
+): Edge[] {
   return editorEdges.map((edge) => ({
     id: edge.id,
     source: edge.sourceNodeId,
     target: edge.targetNodeId,
+    interactionWidth: 18,
+    markerEnd: {
+      color: edge.id === selectedEdgeId ? "#d8e9ed" : "#8cb6bf",
+      type: MarkerType.ArrowClosed
+    },
     animated: focusId
       ? edge.sourceNodeId === focusId || edge.targetNodeId === focusId
       : false,
     style: {
+      stroke: edge.id === selectedEdgeId ? "#d8e9ed" : "var(--cb-teal)",
+      strokeWidth: edge.id === selectedEdgeId ? 3.5 : 2.5,
       opacity:
         focusId && edge.sourceNodeId !== focusId && edge.targetNodeId !== focusId
           ? 0.18
@@ -211,6 +232,7 @@ function GraphEditorInner({
   const [newType, setNewType] = useState<CaseNodeType>("TASK");
   const [saveStatus, setSaveStatus] = useState(copy.saved);
   const [query, setQuery] = useState("");
+  const [connectTargetId, setConnectTargetId] = useState("");
   const [isPending, startTransition] = useTransition();
   const reactFlow = useReactFlow();
   const previousNodeCount = useRef(0);
@@ -223,16 +245,56 @@ function GraphEditorInner({
     () => getSuggestedLinks(editorNodes, editorEdges),
     [editorEdges, editorNodes]
   );
+  const normalizedQuery = query.trim().toLowerCase();
+  const matchingNodes = useMemo(() => {
+    if (!normalizedQuery) return [];
+
+    return editorNodes.filter((node) =>
+      `${node.title} ${node.content ?? ""} ${copy.typeLabels[node.type]}`
+        .toLowerCase()
+        .includes(normalizedQuery)
+    );
+  }, [copy.typeLabels, editorNodes, normalizedQuery]);
+  const matchingNodeIds = useMemo(
+    () => new Set(matchingNodes.map((node) => node.id)),
+    [matchingNodes]
+  );
 
   const flowNodes = useMemo(
-    () => toFlowNodes(editorNodes, analysis, copy, focusId, editorEdges),
-    [analysis, copy, editorEdges, editorNodes, focusId]
+    () =>
+      toFlowNodes(
+        editorNodes,
+        analysis,
+        copy,
+        focusId,
+        editorEdges,
+        matchingNodeIds
+      ),
+    [analysis, copy, editorEdges, editorNodes, focusId, matchingNodeIds]
   );
   const flowEdges = useMemo(
-    () => toFlowEdges(editorEdges, focusId),
-    [editorEdges, focusId]
+    () => toFlowEdges(editorEdges, focusId, selectedEdgeId),
+    [editorEdges, focusId, selectedEdgeId]
   );
   const selectedNode = editorNodes.find((node) => node.id === selectedNodeId);
+  const connectableNodes = useMemo(() => {
+    if (!selectedNodeId) return [];
+
+    return editorNodes.filter((node) => {
+      if (node.id === selectedNodeId) return false;
+
+      return !editorEdges.some(
+        (edge) =>
+          (edge.sourceNodeId === selectedNodeId && edge.targetNodeId === node.id) ||
+          (edge.sourceNodeId === node.id && edge.targetNodeId === selectedNodeId)
+      );
+    });
+  }, [editorEdges, editorNodes, selectedNodeId]);
+  const effectiveConnectTargetId = connectableNodes.some(
+    (node) => node.id === connectTargetId
+  )
+    ? connectTargetId
+    : connectableNodes[0]?.id ?? "";
 
   useEffect(() => {
     if (editorNodes.length > 0 && editorNodes.length !== previousNodeCount.current) {
@@ -373,27 +435,42 @@ function GraphEditorInner({
     });
   }
 
-  function connectNodes(connection: Connection) {
+  function connectNodes(connection: Pick<Connection, "source" | "target">) {
     if (!connection.source || !connection.target) return;
+    if (connection.source === connection.target) return;
 
     startTransition(async () => {
-      markSaving();
-      const edge = await createEdgeAction(
-        locale,
-        boardId,
-        connection.source!,
-        connection.target!
-      );
-      setEditorEdges((current) => [
-        ...current.filter((item) => item.id !== edge.id),
-        {
-          id: edge.id,
-          sourceNodeId: edge.sourceNodeId,
-          targetNodeId: edge.targetNodeId,
-          label: edge.label
-        }
-      ]);
-      markSaved();
+      try {
+        markSaving();
+        const edge = await createEdgeAction(
+          locale,
+          boardId,
+          connection.source!,
+          connection.target!
+        );
+        setEditorEdges((current) => [
+          ...current.filter((item) => item.id !== edge.id),
+          {
+            id: edge.id,
+            sourceNodeId: edge.sourceNodeId,
+            targetNodeId: edge.targetNodeId,
+            label: edge.label
+          }
+        ]);
+        setSelectedEdgeId(edge.id);
+        markSaved();
+      } catch {
+        setSaveStatus(copy.saveError);
+      }
+    });
+  }
+
+  function connectSelectedNode() {
+    if (!selectedNode || !effectiveConnectTargetId) return;
+
+    connectNodes({
+      source: selectedNode.id,
+      target: effectiveConnectTargetId
     });
   }
 
@@ -444,11 +521,7 @@ function GraphEditorInner({
   }
 
   function focusSearchResult() {
-    const found = editorNodes.find((node) =>
-      `${node.title} ${node.content ?? ""}`
-        .toLowerCase()
-        .includes(query.toLowerCase())
-    );
+    const found = matchingNodes[0];
 
     if (found) {
       reactFlow.setCenter(found.x + NODE_WIDTH / 2, found.y + NODE_HEIGHT / 2, {
@@ -596,7 +669,66 @@ function GraphEditorInner({
                 <Search className="h-4 w-4" />
               </button>
             </div>
+            {normalizedQuery ? (
+              <p className="text-xs font-bold text-[var(--cb-muted)]">
+                {matchingNodes.length > 0
+                  ? copy.searchResults.replace(
+                      "{count}",
+                      String(matchingNodes.length)
+                    )
+                  : copy.noSearchResults}
+              </p>
+            ) : null}
           </label>
+        </div>
+
+        <div className="editor-panel panel">
+          <h2 className="font-black">{copy.connectTitle}</h2>
+          {selectedNode ? (
+            <div className="mt-3 grid gap-3">
+              <div className="rounded-md border border-[var(--cb-border)] bg-[rgba(9,13,12,0.42)] p-3 text-sm">
+                <p className="text-xs font-bold text-[var(--cb-muted)]">
+                  {copy.connectFrom}
+                </p>
+                <p className="mt-1 font-black">{selectedNode.title}</p>
+              </div>
+              <label className="grid gap-2">
+                <span className="text-sm font-bold text-[var(--cb-muted)]">
+                  {copy.connectTo}
+                </span>
+                <select
+                  className="select"
+                  disabled={connectableNodes.length === 0 || isPending}
+                  onChange={(event) => setConnectTargetId(event.target.value)}
+                  value={effectiveConnectTargetId}
+                >
+                  {connectableNodes.map((node) => (
+                    <option key={node.id} value={node.id}>
+                      {node.title}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {connectableNodes.length === 0 ? (
+                <p className="text-sm text-[var(--cb-muted)]">
+                  {copy.noConnectTarget}
+                </p>
+              ) : null}
+              <button
+                className="button w-full"
+                disabled={!effectiveConnectTargetId || isPending}
+                onClick={connectSelectedNode}
+                type="button"
+              >
+                <Link2 className="h-4 w-4" />
+                {copy.connect}
+              </button>
+            </div>
+          ) : (
+            <p className="mt-3 text-sm text-[var(--cb-muted)]">
+              {copy.selectNode}
+            </p>
+          )}
         </div>
 
         <div className="editor-panel panel">
@@ -612,9 +744,7 @@ function GraphEditorInner({
                   onClick={() =>
                     connectNodes({
                       source: suggestion.source.id,
-                      sourceHandle: null,
-                      target: suggestion.target.id,
-                      targetHandle: null
+                      target: suggestion.target.id
                     })
                   }
                   type="button"

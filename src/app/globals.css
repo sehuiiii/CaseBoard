@@ -589,6 +589,10 @@ button:disabled {
   stroke-width: 2.5;
 }
 
+.react-flow__edge.selected .react-flow__edge-path {
+  filter: drop-shadow(0 0 6px rgba(216, 233, 237, 0.38));
+}
+
 .clue-node {
   width: 220px;
   min-height: 126px;
@@ -603,23 +607,24 @@ button:disabled {
 }
 
 .clue-node .react-flow__handle {
-  width: 13px;
-  height: 13px;
+  width: 16px;
+  height: 16px;
   border: 2px solid #0a0f0d;
   background: var(--cb-teal-strong);
-  box-shadow: 0 0 0 4px rgba(108, 150, 158, 0.18);
+  box-shadow: 0 0 0 5px rgba(108, 150, 158, 0.18);
 }
 
 .clue-node .react-flow__handle-left {
-  left: -8px;
+  left: -10px;
 }
 
 .clue-node .react-flow__handle-right {
-  right: -8px;
+  right: -10px;
 }
 
 .clue-node .react-flow__handle:hover {
   background: #d8e9ed;
+  box-shadow: 0 0 0 7px rgba(216, 233, 237, 0.18);
 }
 
 .react-flow__node.selected .clue-node {
@@ -629,6 +634,13 @@ button:disabled {
 
 .clue-node[data-dimmed="true"] {
   opacity: 0.28;
+}
+
+.clue-node[data-search-match="true"] {
+  border-color: #d8e9ed;
+  box-shadow:
+    0 0 0 2px rgba(216, 233, 237, 0.28),
+    0 18px 46px rgba(0, 0, 0, 0.34);
 }
 
 .clue-node__body {

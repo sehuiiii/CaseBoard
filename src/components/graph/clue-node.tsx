@@ -12,6 +12,7 @@ type ClueNodeData = {
   isCritical: boolean;
   isIsolated: boolean;
   dimmed: boolean;
+  highlighted: boolean;
 };
 
 export function ClueNode({data}: NodeProps) {
@@ -21,6 +22,7 @@ export function ClueNode({data}: NodeProps) {
     <div
       className="clue-node"
       data-dimmed={nodeData.dimmed}
+      data-search-match={nodeData.highlighted}
       style={{borderLeftColor: nodeTypeColors[nodeData.type]}}
     >
       <Handle position={Position.Left} type="target" />
